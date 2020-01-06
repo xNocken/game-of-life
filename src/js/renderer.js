@@ -22,12 +22,10 @@ export const generation = (fields) => {
       for (let i = -1; i < 2; i += 1) {
         for (let o = -1; o < 2; o += 1) {
           if (i !== 0 || o !== 0) {
-            if (rowIndex - i < 0 || fieldIndex - o < 0 || rowIndex - i > 99 || fieldIndex - o > 99) {
-              continue;
-            }
-
-            if (fields[rowIndex - i][fieldIndex - o].data('info').alive) {
-              count += 1;
+            if (rowIndex - i > 0 && fieldIndex - o > 0 && rowIndex - i < 99 && fieldIndex - o < 99) {
+              if (fields[rowIndex - i][fieldIndex - o].data('info').alive) {
+                count += 1;
+              }
             }
           }
         }
