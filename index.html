@@ -10,10 +10,39 @@
 </head>
 
 <body>
-  <form id="start-form">
-    <input name="felder" type="number" min="3" max ="100" value="3">
+  <form id="start-form" style="display: inline-block;">
     <input type="submit" value="Start">
-    <p id="generations"></p>
+    <p style="display: inline-block;" id="generations"></p>
+  </form>
+  <form id="settings">
+    <input id="speed" type="number" value="50" title="speed">
+    <input id="max" type="number" value="-1" title="Max generations">
+    <div>
+      dead
+      <input type="checkbox" name="0" id="deathbox0">
+      <input type="checkbox" name="1" id="deathbox1">
+      <input type="checkbox" name="2" id="deathbox2">
+      <input type="checkbox" name="3" id="deathbox3" checked>
+      <input type="checkbox" name="4" id="deathbox4">
+      <input type="checkbox" name="5" id="deathbox5">
+      <input type="checkbox" name="6" id="deathbox6">
+      <input type="checkbox" name="7" id="deathbox7">
+      <input type="checkbox" name="8" id="deathbox8">
+    </div>
+
+    <div>
+      living
+      <input type="checkbox" name="0" id="lifebox0">
+      <input type="checkbox" name="1" id="lifebox1">
+      <input type="checkbox" name="2" id="lifebox2" checked>
+      <input type="checkbox" name="3" id="lifebox3" checked>
+      <input type="checkbox" name="4" id="lifebox4">
+      <input type="checkbox" name="5" id="lifebox5">
+      <input type="checkbox" name="6" id="lifebox6">
+      <input type="checkbox" name="7" id="lifebox7">
+      <input type="checkbox" name="8" id="lifebox8">
+    </div>
+    <input type="submit" value="Submit">
   </form>
 
   <div id="fields"></div>

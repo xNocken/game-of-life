@@ -1,7 +1,8 @@
 import $ from 'jquery';
-import rules from '../config';
+import { rules } from '../config';
 
-const mainFields = Array.from({ length: 100 }, () => Array.from({ length: 100 }, () => false));
+const mainFields = Array.from({ length: rules.length },
+  () => Array.from({ length: rules.length }, () => false));
 let generations = 0;
 
 export const fieldClick = ($element) => {
@@ -10,8 +11,9 @@ export const fieldClick = ($element) => {
   data.alive = !data.alive;
   mainFields[data.x][data.y] = data.alive;
 
-  $element.addClass(`field--${data.alive ? 'alive' : 'dead'}`);
-  $element.removeClass(`field--${!data.alive ? 'alive' : 'dead'}`);
+  $element
+    .addClass(`field--${data.alive ? 'alive' : 'dead'}`)
+    .removeClass(`field--${!data.alive ? 'alive' : 'dead'}`);
 };
 
 export const generation = (fields) => {
@@ -25,7 +27,10 @@ export const generation = (fields) => {
       for (let i = -1; i < 2; i += 1) {
         for (let o = -1; o < 2; o += 1) {
           if (i !== 0 || o !== 0) {
-            if (rowIndex - i > 0 && fieldInde - o > 0 && rowIndex - i < 99 && fieldInde - o < 99) {
+            if (rowIndex - i > 0
+              && fieldInde - o > 0
+              && rowIndex - i < (rules.length - 1)
+              && fieldInde - o < (rules.length - 1)) {
               if (mainFields[rowIndex - i][fieldInde - o]) {
                 count += 1;
               }
@@ -34,7 +39,7 @@ export const generation = (fields) => {
         }
       }
 
-      alive = rules[rules.mode][alive ? 'alive' : 'dead'][count];
+      alive = rules.modes[rules.mode][alive ? 'alive' : 'dead'][count];
 
       aliveArray[rowIndex][fieldInde] = alive;
     });
@@ -45,7 +50,11 @@ export const generation = (fields) => {
     row.forEach((field, fieldIndex) => {
       const alive = field;
 
+
       if (mainFields[rowIndex][fieldIndex] !== field) {
+        const data = fields[rowIndex][fieldIndex].data('info');
+        data.alive = field;
+        fields[rowIndex][fieldIndex].data('info', data);
         mainFields[rowIndex][fieldIndex] = alive;
         fields[rowIndex][fieldIndex].addClass(`field--${alive ? 'alive' : 'dead'}`);
         fields[rowIndex][fieldIndex].removeClass(`field--${!alive ? 'alive' : 'dead'}`);
