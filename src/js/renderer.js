@@ -1,29 +1,32 @@
 import $ from 'jquery';
+import rules from '../config';
+
+const mainFields = Array.from({ length: 100 }, () => Array.from({ length: 100 }, () => false));
+let generations = 0;
 
 export const fieldClick = ($element) => {
-  const infos = $element.data('info');
+  const data = $element.data('info');
 
-  infos.alive = !infos.alive;
+  data.alive = !data.alive;
+  mainFields[data.x][data.y] = data.alive;
 
-  $element.addClass(`field--${infos.alive ? 'alive' : 'dead'}`);
-  $element.removeClass(`field--${!infos.alive ? 'alive' : 'dead'}`);
-
-  $element.data('info', infos);
+  $element.addClass(`field--${data.alive ? 'alive' : 'dead'}`);
+  $element.removeClass(`field--${!data.alive ? 'alive' : 'dead'}`);
 };
 
 export const generation = (fields) => {
   const aliveArray = fields.map(row => row.map(field => field.alive));
 
   fields.forEach((row, rowIndex) => {
-    row.forEach((field, fieldIndex) => {
-      let { alive } = field.data('info');
+    row.forEach((field, fieldInde) => {
+      let alive = mainFields[rowIndex][fieldInde];
       let count = 0;
 
       for (let i = -1; i < 2; i += 1) {
         for (let o = -1; o < 2; o += 1) {
           if (i !== 0 || o !== 0) {
-            if (rowIndex - i > 0 && fieldIndex - o > 0 && rowIndex - i < 99 && fieldIndex - o < 99) {
-              if (fields[rowIndex - i][fieldIndex - o].data('info').alive) {
+            if (rowIndex - i > 0 && fieldInde - o > 0 && rowIndex - i < 99 && fieldInde - o < 99) {
+              if (mainFields[rowIndex - i][fieldInde - o]) {
                 count += 1;
               }
             }
@@ -31,49 +34,27 @@ export const generation = (fields) => {
         }
       }
 
-      switch (count) {
-        case (0):
-        case (1):
-        case (4):
-        case (5):
-        case (6):
-        case (7):
-        case (8):
-          alive = false;
-          break;
+      alive = rules[rules.mode][alive ? 'alive' : 'dead'][count];
 
-        case (2):
-        case (3):
-          if (alive === false && count === 2) {
-            alive = false;
-            break;
-          }
-
-          alive = true;
-          break;
-
-        default:
-          console.error('errorrrrrrrrrrrrrrrrrrrrrrr');
-          break;
-      }
-
-      aliveArray[rowIndex][fieldIndex] = alive;
+      aliveArray[rowIndex][fieldInde] = alive;
     });
   });
 
 
   aliveArray.forEach((row, rowIndex) => {
     row.forEach((field, fieldIndex) => {
-      const data = fields[rowIndex][fieldIndex].data('info');
+      const alive = field;
 
-      data.alive = field;
-
-      fields[rowIndex][fieldIndex].addClass(`field--${data.alive ? 'alive' : 'dead'}`);
-      fields[rowIndex][fieldIndex].removeClass(`field--${!data.alive ? 'alive' : 'dead'}`);
-
-      fields[rowIndex][fieldIndex].data('info', data);
+      if (mainFields[rowIndex][fieldIndex] !== field) {
+        mainFields[rowIndex][fieldIndex] = alive;
+        fields[rowIndex][fieldIndex].addClass(`field--${alive ? 'alive' : 'dead'}`);
+        fields[rowIndex][fieldIndex].removeClass(`field--${!alive ? 'alive' : 'dead'}`);
+      }
     });
   });
+
+  generations += 1;
+  $('#generations').text(`Generations: ${generations}`);
 };
 
 export const generateFields = (length) => {
