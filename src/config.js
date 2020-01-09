@@ -4,6 +4,10 @@ export const rules = {
   mode: 'normal',
   length: 100,
   delay: 0,
+  toGeneration: false,
+  requestedGeneration: 0,
+  generations: 0,
+  gameActive: false,
   modes: {
     normal: {
       stopAfter: Infinity,
@@ -41,7 +45,7 @@ export const saveSettings = () => {
   const speed = parseInt($('#speed')[0].value, 10);
   const max = parseInt($('#max')[0].value, 10);
 
-  for (let i = 0; i < 8; i += 1) {
+  for (let i = 0; i < 9; i += 1) {
     living[i] = $(`#lifebox${i}`)[0].checked;
     dead[i] = $(`#deathbox${i}`)[0].checked;
   }
