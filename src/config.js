@@ -2,6 +2,7 @@ import $ from 'jquery';
 
 export const rules = {
   mode: 'normal',
+  count: 0,
   length: 100,
   delay: 0,
   toGeneration: false,

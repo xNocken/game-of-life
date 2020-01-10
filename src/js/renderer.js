@@ -9,6 +9,10 @@ let lastTime = 0;
 let wasActive = false;
 
 setInterval(() => {
+  if (generations === lastGenerations) {
+    return;
+  }
+
   const difference = (Date.now() - lastTime) / 1000;
   lastTime = Date.now();
 
@@ -20,21 +24,29 @@ setInterval(() => {
   const time = `${minutes.toString().length === 1 ? `0${minutes}` : minutes}:${seconds.toString().length === 1 ? `0${seconds}` : seconds}`;
 
   if (wasActive && !rules.gameActive) {
+    // eslint-disable-next-line
     alert(`you won in ${time}`);
   }
   wasActive = rules.gameActive;
 
-  const text = rules.gameActive ? time : `Generations: ${generations} | ${gensPerSec}/sek`;
+  const text = rules.gameActive && rules.gameMode === 'time' ? time : `Generations: ${generations} | ${gensPerSec}/sek`;
 
   $('#generations').text(text);
   lastGenerations = generations;
-}, 1000);
+}, 500);
 
 export const fieldClick = ($element) => {
   const data = $element.data('info');
 
   if (rules.gameActive && data.alive) {
     return;
+  }
+
+  if (rules.gameMode === 'generations' && !rules.gameActive) {
+    rules.modes.custom.stopAfter = 1;
+    rules.gameActive = true;
+    generations = 0;
+    rules.count = 0;
   }
 
   data.alive = !data.alive;
@@ -105,7 +117,7 @@ export const generateFields = (length) => {
   const fields = Array.from({ length })
     .map((_, xIndex) => Array.from({ length })
       .map((__, yIndex) => {
-        const $field = $(`<div class="field field--dead" data-x="${xIndex}" data-y="${yIndex}"></div>`);
+        const $field = $('<div class="field field--dead"></div>');
 
         $field.data('info', {
           x: xIndex,
@@ -165,7 +177,7 @@ export const updateFields = ($fields) => {
   });
 };
 
-export const gameLogic = () => {
+export const isFieldEmpty = () => {
   let result = true;
   mainFields.forEach((row) => {
     row.forEach((field) => {

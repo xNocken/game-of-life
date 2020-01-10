@@ -10,13 +10,15 @@
 </head>
 
 <body>
-  <input type="submit" value="Start Game" id="game">
+  <input type="submit" value="Start Game time" id="game" data-mode="time">
+  <input type="submit" value="Start Game generations" id="game" data-mode="generations">
   <input type="number" name="generationnumber" id="generationnumber">
+  <input type="submit" value="generation" id="generation"><br>
   <input type="submit" value="Go to generation" id="goto">
   <input type="submit" id="random" value="Random">
   <form id="start-form" style="display: inline-block;">
     <input type="submit" value="Start">
-    <p style="display: inline-block;" id="generations"></p>
+    <p style="display: inline-block;" id="generations">Generations: 0 | 0.00/sek</p>
   </form>
   <form id="settings">
     <input id="speed" type="number" value="50" title="speed">

@@ -5,10 +5,13 @@ import {
   generation,
   randomized,
   updateFields,
-  gameLogic,
+  isFieldEmpty,
 } from './js/renderer';
 
+
 import './scss/main.scss';
+
+global.$ = $;
 
 $(() => {
   const fields = generateFields(rules.length);
@@ -36,34 +39,41 @@ $(() => {
     updateFields(fields);
   });
 
-  $('#game').on('click', () => {
+  $('input#game').on('click', (event) => {
     randomized(fields);
+    const mode = $(event.target).data('mode');
 
-    let count = 0;
+    rules.gameMode = mode;
     let result = true;
     const starttime = Date.now();
 
+    rules.mode = 'custom';
+    rules.modes.custom.dead = rules.modes.normal.dead;
+    rules.modes.custom.alive = rules.modes.normal.alive;
+
     if (!intervall) {
+      rules.delay = 30;
       intervall = setInterval(() => {
-        rules.delay = 30;
-        rules.gameActive = true;
+        if (mode === 'time') {
+          rules.gameActive = true;
+        }
         rules.time = (Date.now() - starttime) / 1000;
         generation(fields);
 
-        count += 1;
-        result = gameLogic();
+        rules.count += 1;
+        result = isFieldEmpty();
 
         if (result) {
           clearInterval(intervall);
           rules.gameActive = false;
           intervall = 0;
-          count = 0;
+          rules.count = 0;
         }
 
-        if (count === rules.modes[rules.mode].stopAfter) {
+        if (rules.count === rules.modes[rules.mode].stopAfter) {
           clearInterval(intervall);
           intervall = 0;
-          count = 0;
+          rules.count = 0;
         }
       }, rules.delay);
     } else {
